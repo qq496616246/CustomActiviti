@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 写Sql语句   -->
+<mapper namespace="com.hnu.scw.mapper.ApprovalProcessMapper">
+    <!-- 插入新增的流程数据 -->
+    <insert id="saveProcessInfoData" parameterType="com.hnu.scw.pojo.ApprovalProcess">
+        insert into
+        sys_process_approval(
+        process_Name,
+        process_Content,
+        process_Type
+        )values(
+        #{process_Name},
+        #{process_Content},
+        #{process_Type}
+        )
+    </insert>
+    <!-- 查询一共有多少条审批流程 -->
+    <select id="findTotalNumber" resultType="Integer">
+        select max(process_Id)
+        from
+        sys_process_approval
+    </select>
+    <!-- 插入数据到流程详细表中 -->
+    <insert id="saveApprovalNode" parameterType="com.hnu.scw.pojo.ApprovalProcessDetail">
+        insert into
+        sys_process_detail(
+        processdetail_Id,
+        processdetail_NodeId,
+        processdetail_Nodeorder,
+        processdetail_Back
+        )values(
+        #{processdetail_Id},
+        #{processdetail_NodeId},
+        #{processdetail_Nodeorder},
+        #{processdetail_Back}
+        )
+    </insert>
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 写Sql语句   -->
+<mapper namespace="com.hnu.scw.mapper.ApproverNodeMapper">
+    <!-- 插入数据到审核节点表中 -->
+    <insert id="saveapprovnode" parameterType="com.hnu.scw.pojo.ApproverNode" >
+        insert into
+        sys_approvnode(
+        node_Name,
+        node_PassNumber,
+        node_Description,
+        node_TotalNumber
+        )
+        values(
+        #{node_Name},
+        #{node_PassNumber},
+        #{node_Description},
+        #{node_TotalNumber}
+        )
+    </insert>
+
+    <!-- 查询返回审核表中的条目数 -->
+    <select id="findNumberNode"   resultType="Integer">
+        select max(node_Id)
+        from
+        sys_approvnode
+    </select>
+
+    <!-- 插入数据到节点管理员中 -->
+    <insert id="saveApproNodeToPeople"  parameterType="com.hnu.scw.pojo.ApproverNodeOrder">
+        insert into
+        sys_approvnodepeople(
+        approvnode_UserId,
+        approvnode_nodeId
+        )values(
+        #{approvnode_UserId},
+        #{approvnode_nodeId}
+        )
+    </insert>
+</mapper>

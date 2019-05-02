@@ -1,0 +1,1 @@
+yes,mbfw,watermark.png,mbfw,1,mbfw,1

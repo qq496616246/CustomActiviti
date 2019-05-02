@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 写Sql语句   -->
+<mapper namespace="com.hnu.scw.mapper.ApproverMapper">
+
+    <!-- 添加一个审批人员数据-->
+    <insert id="saveApprover" parameterType="com.hnu.scw.pojo.Approver">
+        INSERT INTO sys_approver(user_Id, approver_Description,approver_Rights_Description,user_Name)
+        VALUES (
+        #{user_Id},
+        #{approver_Description},
+        #{approver_Rights_Description},
+        #{user_Name}
+        )
+    </insert>
+
+</mapper>

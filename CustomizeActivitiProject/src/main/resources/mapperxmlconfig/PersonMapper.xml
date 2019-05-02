@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 写Sql语句   -->
+<mapper namespace="com.hnu.scw.mapper.PersonMapper">
+
+    <!-- 添加一个person数据-->
+    <insert id="addPerson" parameterType="com.hnu.scw.pojo.Person">
+        INSERT INTO person(name)
+        VALUES (
+        #{name}
+        )
+    </insert>
+
+    <select id="findPersonList" resultType="com.hnu.scw.pojo.Person">
+        SELECT * FROM person
+    </select>
+
+    <!-- 添加一个用户user信息 -->
+    <insert id="addUser" parameterType="user">
+        INSERT INTO user (name,age,birthday)
+        VALUES (#{name} , #{age} ,#{birthday})
+    </insert>
+
+</mapper>

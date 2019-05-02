@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 写Sql语句   -->
+<mapper namespace="com.hnu.scw.mapper.AssetAbandonMapper">
+    <!-- 插入新增的资产报废数据 -->
+    <insert id="saveAssetAbandon" parameterType="com.hnu.scw.pojo.AssetAbandonManage" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        asset_abandon(
+            project_Name,
+            process_Type,
+            abandon_reason,
+            abandon_approve,
+            approve_status
+        )
+        values(
+        #{project_Name},
+        #{process_Type},
+        #{abandon_reason},
+        #{abandon_approve},
+        "已提交"
+        )
+    </insert>
+
+</mapper>

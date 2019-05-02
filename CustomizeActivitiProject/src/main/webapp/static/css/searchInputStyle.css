@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+#retrieve_content {
+    border-color: #6fb3e0;
+    border-width: 1px;
+    width: 120px;
+    height: 18px!important;
+    border-radius: 4px!important;
+    font-size: 13px;
+    color: #666!important;
+    z-index: 11;
+    -moz-transition: all .15s ease;
+    -webkit-transition: all .15s ease;
+    -o-transition: all .15s ease;
+    -ms-transition: all .15s ease;
+    transition: all .15s ease;
+}

@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 写Sql语句   -->
+<mapper namespace="com.hnu.scw.mapper.ApprovalProjectMapper">
+    <resultMap id="approvalproject" type="com.hnu.scw.pojo.ApprovalProcess">
+        <id property="process_Id" column="process_Id"/>
+        <result property="process_Name" column="process_Name"/>
+        <result property="process_Content" column="process_Content"/>
+        <result property="process_Type" column="process_Type"/>
+    </resultMap>
+
+    <resultMap id="projectprocess" type="com.hnu.scw.pojo.ProjectProcess">
+        <id property="projectprocess_Id" column="projectprocess_Id"/>
+        <result property="project_Id" column="project_Id"/>
+        <result property="project_Name" column="project_Name"/>
+        <result property="project_Stryle" column="project_Stryle"/>
+        <result property="current_NodeOrder" column="current_NodeOrder"/>
+        <result property="process_FinishStatus" column="process_FinishStatus"/>
+        <result property="process_ApprovalId" column="process_ApprovalId"/>
+        <result property="process_ApprovalName" column="process_ApprovalName"/>
+        <result property="current_NodeName" column="current_NodeName"/>
+        <result property="description_Passnumber" column="description_Passnumber"/>
+        <result property="description_Refusenumber" column="description_Refusenumber"/>
+        <result property="process_Type" column="process_Type"/>
+    </resultMap>
+
+
+    <resultMap id="processAndProject" type="com.hnu.scw.pojo.ProcessAndProject">
+        <association property="assetAbandonManage" javaType="com.hnu.scw.pojo.AssetAbandonManage">
+            <id property="id" column="id"/>
+            <result property="process_Type" column="process_Type"/>
+            <result property="project_Name" column="project_Name"/>
+            <result property="abandon_reason" column="abandon_reason"/>
+            <result property="abandon_approve" column="abandon_approve"/>
+            <result property="approve_status" column="approve_status"/>
+        </association>
+        <association property="projectProcess" javaType="com.hnu.scw.pojo.ProjectProcess">
+            <id property="projectprocess_Id" column="projectprocess_Id"/>
+            <result property="project_Id" column="project_Id"/>
+            <result property="project_Name" column="project_Name"/>
+            <result property="project_Stryle" column="project_Stryle"/>
+            <result property="current_NodeOrder" column="current_NodeOrder"/>
+            <result property="process_FinishStatus" column="process_FinishStatus"/>
+            <result property="process_ApprovalId" column="process_ApprovalId"/>
+            <result property="process_ApprovalName" column="process_ApprovalName"/>
+            <result property="current_NodeName" column="current_NodeName"/>
+            <result property="description_Passnumber" column="description_Passnumber"/>
+            <result property="description_Refusenumber" column="description_Refusenumber"/>
+            <result property="process_Type" column="process_Type"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="relativeInfoProject" type="com.hnu.scw.pojo.RelativeInfoProject">
+        <association property="projectProcess" javaType="com.hnu.scw.pojo.ProjectProcess">
+            <id property="projectprocess_Id" column="projectprocess_Id"/>
+            <result property="project_Id" column="project_Id"/>
+            <result property="project_Name" column="project_Name"/>
+            <result property="project_Stryle" column="project_Stryle"/>
+            <result property="current_NodeOrder" column="current_NodeOrder"/>
+            <result property="process_FinishStatus" column="process_FinishStatus"/>
+            <result property="process_ApprovalId" column="process_ApprovalId"/>
+            <result property="process_ApprovalName" column="process_ApprovalName"/>
+            <result property="current_NodeName" column="current_NodeName"/>
+            <result property="description_Passnumber" column="description_Passnumber"/>
+            <result property="description_Refusenumber" column="description_Refusenumber"/>
+            <result property="process_Type" column="process_Type"/>
+        </association>
+
+        <association property="approvalProcess" javaType="com.hnu.scw.pojo.ApprovalProcess">
+            <id property="process_Id" column="process_Id"/>
+            <result property="process_Name" column="process_Name"/>
+            <result property="process_Content" column="process_Content"/>
+            <result property="process_Type" column="process_Type"/>
+        </association>
+
+        <association property="approverNode" javaType="com.hnu.scw.pojo.ApproverNode">
+            <id property="node_Id" column="node_Id"/>
+            <result property="node_Name" column="node_Name"/>
+            <result property="node_PassNumber" column="node_PassNumber"/>
+            <result property="node_TotalNumber" column="node_TotalNumber"/>
+            <result property="node_Description" column="node_Description"/>
+        </association>
+
+        <association property="approvalProcessDetail" javaType="com.hnu.scw.pojo.ApprovalProcessDetail">
+            <id property="process_Id" column="process_Id"/>
+            <result property="processdetail_Id" column="processdetail_Id"/>
+            <result property="processdetail_NodeId" column="processdetail_NodeId"/>
+            <result property="processdetail_Nodeorder" column="processdetail_Nodeorder"/>
+            <result property="processdetail_Back" column="processdetail_Back"/>
+        </association>
+    </resultMap>
+
+
+    <!--获取系统所有的审批流程信息-->
+    <select id="findList"  resultMap="approvalproject">
+        select
+        *
+        from
+        sys_process_approval
+    </select>
+
+    <!-- 根据选择的审批流程获取对应的第一个审批节点的名字，主要用来显示的 -->
+    <select id="findFirstNodeName" parameterType="Integer" resultType="String">
+        select
+        sys_approvnode.node_Name
+        from
+        sys_approvnode ,sys_process_detail
+        where
+        sys_process_detail.processdetail_Id = #{processdetail_Id}
+        and
+        sys_process_detail.processdetail_NodeId = sys_approvnode.node_Id
+        and
+        sys_process_detail.processdetail_Nodeorder = 1
+    </select>
+
+    <insert id="saveOneProjectProcessInfo" parameterType="com.hnu.scw.pojo.ProjectProcess">
+        insert into
+        aproject_process(
+        project_Name,
+        project_Id,
+        project_Stryle,
+        current_NodeOrder,
+        process_FinishStatus,
+        process_ApprovalId,
+        process_ApprovalName,
+        current_NodeName,
+        description_Passnumber,
+        description_Refusenumber,
+        process_Type
+        )values(
+        #{project_Name},
+        #{project_Id},
+        #{project_Stryle},
+        #{current_NodeOrder},
+        #{process_FinishStatus},
+        #{process_ApprovalId},
+        #{process_ApprovalName},
+        #{current_NodeName},
+        #{description_Passnumber},
+        #{description_Refusenumber},
+        #{process_Type}
+        )
+    </insert>
+
+    <!--获取系统所有的需要审批的项目-->
+    <select id="findAllProject"  resultMap="projectprocess">
+        select
+        *
+        from
+        aproject_process
+    </select>
+
+    <!--根据项目审批ID获取对应的项目审批详细细节-->
+    <select id="findCurrentProjectDetail"  parameterType="java.lang.Integer" resultMap="projectprocess">
+        select
+        *
+        from
+        aproject_process
+        WHERE
+        projectprocess_Id = #{processId}
+
+    </select>
+
+    <!-- 根据项目ID和审批类型，查询对应的项目内容(模拟处理请假申请) -->
+    <select id="findDifferentContent" parameterType="java.lang.Integer" resultMap="processAndProject">
+        select *
+        from
+        asset_abandon
+        ,
+        aproject_process
+        where
+        aproject_process.projectprocess_Id = ${projectprocess_Id}
+        and
+        asset_abandon.id = aproject_process.project_Id
+    </select>
+
+    <!-- 根据项目ID，更新日常请假申请表对应id的审核状态，为审核中 -->
+    <update id="editProjectManagerStatus" parameterType="Integer">
+        update
+        asset_abandon
+        set
+        approve_status = "审批中"
+        where
+        id = #{id}
+    </update>
+
+    <!-- 根据审批项目的ID和类型，获取到当前处理的审批节点的ID -->
+    <select id="findCurrentNodeId" parameterType="com.hnu.scw.pojo.ProjectProcess" resultType="Integer">
+        select
+        sys_process_detail.processdetail_NodeId
+        from
+        aproject_process ,sys_process_detail
+        where
+        aproject_process.project_Id =#{project_Id}
+        and
+        aproject_process.process_Type =#{process_Type}
+        and
+        aproject_process.process_ApprovalId = sys_process_detail.processdetail_Id
+        and
+        aproject_process.current_NodeOrder = sys_process_detail.processdetail_Nodeorder
+    </select>
+
+    <!-- 插入数据到项目流程细节表中aproject_processdetail -->
+    <insert id="saveProjectProceeDetail" parameterType="com.hnu.scw.pojo.ProjectProcessDetail">
+        insert into
+        aproject_processdetail(
+        detail_ProcessId,
+        detail_ApproverContent,
+        detail_ApproverUserID,
+        detail_ApprovalTime,
+        detail_OptionResult,
+        detail_CurrentNodeId
+        )values(
+        #{detail_ProcessId},
+        #{detail_ApproverContent},
+        #{detail_ApproverUserID},
+        #{detail_ApprovalTime},
+        #{detail_OptionResult},
+        #{detail_CurrentNodeId}
+        )
+    </insert>
+
+    <!-- 根据项目流程表中的ID，获取对该流程中当前节点通过的人数 -->
+    <select id="findProjectDescriptionPassNumber" parameterType="com.hnu.scw.pojo.ProjectProcess"  resultType="Integer">
+        select
+        description_Passnumber
+        from
+        aproject_process
+        where
+        projectprocess_Id = #{projectprocess_Id}
+        and
+        process_Type = #{process_Type}
+    </select>
+
+    <!-- 根据内容，查询多个表的内容 -->
+    <select id="findRelativeInfo" parameterType="com.hnu.scw.pojo.ProjectProcess" resultMap="relativeInfoProject">
+        select *
+        from
+        aproject_process , sys_approvnode , sys_process_approval,sys_process_detail
+        where
+        aproject_process.projectprocess_Id = #{projectprocess_Id}
+        and
+        aproject_process.process_Type = #{process_Type}
+        and
+        aproject_process.process_ApprovalId = sys_process_approval.process_Id
+        and
+        sys_process_detail.processdetail_Id = aproject_process.process_ApprovalId
+        and
+        aproject_process.current_NodeOrder = sys_process_detail.processdetail_Nodeorder
+        and
+        sys_process_detail.processdetail_NodeId = sys_approvnode.node_Id
+    </select>
+
+    <!-- 插入数据到项目过程描述表中  -->
+    <insert id="saveProjectProcessDescription" parameterType="com.hnu.scw.pojo.ProjectProcessDescription">
+        insert into
+        aproject_prcessdescription(
+        description_ProcessId,
+        description_Time,
+        description_Content
+        )values(
+        #{description_ProcessId},
+        #{description_Time},
+        #{description_Content}
+        )
+    </insert>
+
+    <!-- 更新对应的项目过程表中的通过人数字段 -->
+    <update id="editProjectProcess" parameterType="com.hnu.scw.pojo.ProjectProcess">
+        update
+        aproject_process
+        set
+        description_Passnumber = #{description_Passnumber}
+        where
+        projectprocess_Id = #{projectprocess_Id}
+        and
+        process_Type = #{process_Type}
+    </update>
+
+    <!-- 根据当前审批流程的节点顺序，判断是否还有后续节点 -->
+    <select id="findIfNextApprovalNode" parameterType="com.hnu.scw.pojo.ProjectProcess" resultMap="relativeInfoProject">
+        select *
+        from
+        aproject_process , sys_approvnode , sys_process_approval,sys_process_detail
+        where
+        aproject_process.projectprocess_Id = #{projectprocess_Id}
+        and
+        aproject_process.process_Type = #{process_Type}
+        and
+        aproject_process.process_ApprovalId = sys_process_approval.process_Id
+        and
+        sys_process_detail.processdetail_Id = aproject_process.process_ApprovalId
+        and
+        (aproject_process.current_NodeOrder+1) = sys_process_detail.processdetail_Nodeorder
+        and
+        sys_process_detail.processdetail_NodeId = sys_approvnode.node_Id
+    </select>
+
+    <!-- 更新对应的项目过程表中的通过人数字段和修改是否完成字段 -->
+    <update id="editProjectProcessStatus" parameterType="com.hnu.scw.pojo.ProjectProcess">
+        update
+        aproject_process
+        set
+        description_Passnumber = #{description_Passnumber},
+        process_FinishStatus ="流程结束，审批工作通过"
+        where
+        projectprocess_Id = #{projectprocess_Id}
+        and
+        process_Type = #{process_Type}
+    </update>
+
+    <!-- 根据项目ID，更新报废申请表的审核状态 ，为审核完成-->
+    <update id="editAprojectManagerStatus" parameterType="com.hnu.scw.pojo.AssetAbandonManage">
+        update
+        asset_abandon
+        set
+        approve_status = #{approve_status}
+        where
+        id = #{id}
+    </update>
+
+
+    <!-- 更新对应的项目过程表中的通过人数字段和当前的审批节点名称和审批的当前次序 -->
+    <update id="editProjectProcessCurrentNode" parameterType="com.hnu.scw.pojo.ProjectProcess">
+        update
+        aproject_process
+        set
+        description_Passnumber = 0,
+        description_Refusenumber = 0,
+        current_NodeName = #{current_NodeName},
+        current_NodeOrder =#{current_NodeOrder}+1
+        where
+        projectprocess_Id = #{projectprocess_Id}
+        and
+        process_Type = #{process_Type}
+    </update>
+
+    <!-- 根据项目流程表中的ID，获取对该流程中当前节点不通过的人数 -->
+    <select id="findProjectDescriptionRefuseNumber" parameterType="com.hnu.scw.pojo.ProjectProcess" resultType="Integer">
+        select
+        description_Refusenumber
+        from
+        aproject_process
+        where
+        projectprocess_Id = #{projectprocess_Id}
+        and
+        process_Type = #{process_Type}
+    </select>
+
+    <!-- 更新对应的项目过程表中的不通过人数字段 -->
+    <update id="editProjectProcessRefuseNumber" parameterType="com.hnu.scw.pojo.ProjectProcess">
+        update
+        aproject_process
+        set
+        description_Refusenumber = #{description_Refusenumber}
+        where
+        projectprocess_Id = #{projectprocess_Id}
+        and
+        process_Type = #{process_Type}
+    </update>
+
+    <!--  根据项目流程ID，更新对应的通过和不通过和流程状态数据-->
+    <update id="editCurrentProjectProcessContent" parameterType="com.hnu.scw.pojo.ProjectProcess">
+        update
+        aproject_process
+        set
+        description_Passnumber=0,
+        description_Refusenumber=0,
+        process_FinishStatus = "未完成"
+        where
+        projectprocess_Id = #{projectprocess_Id}
+        and
+        process_Type = #{process_Type}
+    </update>
+
+    <!--  根据项目过程ID，删除项目明细表中的数据(当前审批节点为第一级的时候)-->
+    <delete id="editDeletProjectProcessDeatil" parameterType="Integer">
+        delete
+        from
+        aproject_processdetail
+        where
+        detail_ProcessId = #{detail_ProcessId}
+    </delete>
+
+    <!-- 这个是修改日常请假信息 -->
+    <update id="editAgainDifferenProjectStatus" parameterType="Integer">
+        update
+        asset_abandon
+        set
+        approve_status = "已提交"
+        where
+        id = #{id}
+    </update>
+
+    <!-- 根据节点ID，返回所有对应节点中审批人员的userid的String数组 -->
+    <select id="findAllUserIdByNodeId" parameterType="Integer" resultType="String">
+        select approvnode_UserId
+        from
+        sys_approvnodepeople
+        where
+        approvnode_nodeId = #{approvnode_nodeId}
+    </select>
+
+    <!--根据审批人员ID，删除过程明细表中之前的数据信息-->
+    <delete id="editProjectProcessDetailByUserID" parameterType="com.hnu.scw.pojo.ProjectProcessDetail">
+        delete
+        from
+        aproject_processdetail
+        where
+        detail_ProcessId = #{detail_ProcessId}
+        and
+        detail_ApproverUserID = #{detail_ApproverUserID}
+    </delete>
+
+    <!--根据项目ID，更新当前的处理审批的节点顺序和节点名字 -->
+    <update id="editProjectProcessLastOrderInfo" parameterType="Integer">
+        update
+        aproject_process
+        set
+        description_Refusenumber = 0,
+        description_Passnumber = 0,
+        current_NodeOrder = current_NodeOrder -1,
+        process_FinishStatus = "未完成"
+        where
+        projectprocess_Id = #{projectprocess_Id}
+    </update>
+
+    <!--  根据项目ID，更新当前的处理审批的节点名字 -->
+    <update id="editProjectProcessNodeName" parameterType="com.hnu.scw.pojo.ProjectProcess">
+        update
+        aproject_process
+        set
+        current_NodeName = #{current_NodeName}
+        where
+        projectprocess_Id = #{projectprocess_Id}
+    </update>
+
+    <update id="editProjectProcessStatusFinished" parameterType="com.hnu.scw.pojo.ProjectProcess">
+        update
+        aproject_process
+        set
+        description_Passnumber = #{description_Passnumber},
+        process_FinishStatus ="流程结束，审批工作不通过(不通过人数大于通过人数)"
+        where
+        projectprocess_Id = #{projectprocess_Id}
+        and
+        process_Type = #{process_Type}
+    </update>
+</mapper>
